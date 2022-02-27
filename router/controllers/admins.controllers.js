@@ -1,17 +1,28 @@
-const newUser = require("../modules/users.model");
+const {
+  handleMongooseErrors,
+} = require("../handleErrors/mongoose.handleErros");
+const { Admin } = require("../models/admin.model");
 
 function getAllAdmins(req, res) {
-  res.send("getgetgetget");
+  res.send("getAllAdmins");
 }
 
-async function postAdmins(req, res) {
-  const user = new newUser(req.body);
+async function createAdmin(req, res) {
   try {
-    await user.save();
-    res.status(200).send(user);
-  } catch (e) {
-    res.status(500).send(e);
+    const { name } = req.body;
+
+    const newAdmin = new Admin({ name });
+    const reciveNewAdmin = await newAdmin.save();
+    res.status(200).send(reciveNewAdmin);
+  } catch (error) {
+    const mongooseErrorMessage = handleMongooseErrors(error);
+    error.mongooseError = mongooseErrorMessage;
+    console.log(error);
+
+    res
+      .status(error.statusCode || 500)
+      .send(error.mongooseError || error.message);
   }
 }
 
-module.exports = { getAllAdmins, postAdmins };
+module.exports = { getAllAdmins, createAdmin };

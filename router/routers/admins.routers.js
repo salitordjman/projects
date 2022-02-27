@@ -1,12 +1,12 @@
 const express = require("express");
-const router = express.Router();
-const checkUserExist = require("../middleware/user.middleware");
+const adminsRouter = express.Router();
+const { validationUserToCreate } = require("../middleware/user.middleware");
 const {
   getAllAdmins,
-  postAdmins,
+  createAdmin,
 } = require("../controllers/admins.controllers");
 
-router.get("/", getAllAdmins);
-router.post("/", checkUserExist, postAdmins);
+adminsRouter.get("/", getAllAdmins);
+adminsRouter.post("/", validationUserToCreate, createAdmin);
 
-module.exports = router;
+module.exports = { adminsRouter };

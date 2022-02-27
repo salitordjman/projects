@@ -1,17 +1,15 @@
-const mongoose = require("mongoose");
+const { Admin } = require("../models/admin.model");
 
-const newUser = require("../modules/users.model");
-
-const checkUserExist = async (req, res, next) => {
+const validationUserToCreate = async (req, res, next) => {
   try {
-    const user = await newUser.exists(req.body);
-    if (user) {
-      console.log("This user already exists");
-      throw new Error("This user already exists");
-    }
-    next();
+    const { name } = req.body;
+    // const isUser = await Admin.exists({ name }); // return bool
+    // if (isUser) throw new Error("This user already exists");
   } catch (e) {
-    res.status(405).send(e);
+    e.statusCode = 405;
+    next(e);
+  } finally {
+    next();
   }
 };
-module.exports = checkUserExist;
+module.exports = { validationUserToCreate };
